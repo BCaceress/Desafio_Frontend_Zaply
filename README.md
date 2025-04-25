@@ -91,8 +91,8 @@ O projeto segue uma arquitetura organizada e modular:
 - `src/hooks/` - Hooks React personalizados
 - `src/types/` - Definições de tipos TypeScript
 - `src/styles/` - Estilos globais e configurações do Tailwind
+- `src/utils/` - Funções reutilizáveis (Máscara valor em reais R$)
 
 ---
 
 Desenvolvido com ❤️ como parte do desafio técnico para Zaply.
-

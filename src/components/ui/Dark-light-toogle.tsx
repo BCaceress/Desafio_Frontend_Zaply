@@ -7,7 +7,6 @@ export default function DarkLightToggle() {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
-    // Inicializa o estado com base no tema atual
     setIsDark(document.documentElement.classList.contains('dark'));
   }, []);
 

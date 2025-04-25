@@ -1,10 +1,10 @@
-import { memo, ChangeEvent, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FaTimes, FaImage, FaUpload, FaCheck } from 'react-icons/fa';
 import { Product } from '@/types/product';
+import { formatCurrency, parseCurrency } from '@/utils/currencyFormatter';
+import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
+import { ChangeEvent, memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { FaImage, FaTimes, FaUpload } from 'react-icons/fa';
 
-// Lista de categorias disponíveis
 const CATEGORIAS = [
   'Bazar E Utilidades',
   'Bebidas',
@@ -19,7 +19,7 @@ const CATEGORIAS = [
   'Perfumaria E Beleza'
 ];
 
-interface ProductEditorProps {
+interface ProductModalProps {
   product: Product;
   isOpen: boolean;
   onSave: () => void;
@@ -28,79 +28,100 @@ interface ProductEditorProps {
   onImageChange: (imageUrl: string) => void;
 }
 
-const ProductEditor = ({ product, isOpen, onSave, onCancel, onChange, onImageChange }: ProductEditorProps) => {
+const ProductModal = ({ product, isOpen, onSave, onCancel, onChange, onImageChange }: ProductModalProps) => {
   const [isValidImage, setIsValidImage] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [localImageFile, setLocalImageFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(product.image || null);
-  
-  // Verifica se está no modo de adição ou edição
+  const [validationErrors, setValidationErrors] = useState<Record<string, boolean>>({});
+  const [formattedPrice, setFormattedPrice] = useState<string>(formatCurrency(product.price * 100));
+
   const isNewProduct = product.id < 0;
 
-  const handleImageFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    setFormattedPrice(formatCurrency(product.price * 100));
+    setPreviewUrl(product.image || null);
+  }, [product]);
+
+  const handleImageFileChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Criar um objeto URL para o arquivo selecionado
     const objectURL = URL.createObjectURL(file);
     setLocalImageFile(file);
     setPreviewUrl(objectURL);
-    
-    // Simular uma URL para enviar ao onImageChange
-    // Em uma implementação real, enviaria o arquivo a um servidor e usaria a URL retornada
     onImageChange(objectURL);
+  }, [onImageChange]);
+
+  const validateForm = useCallback((): boolean => {
+    const errors: Record<string, boolean> = {};
+
+    if (!product.name.trim()) errors.name = true;
+    if (!product.brand.trim()) errors.brand = true;
+    if (!product.categories) errors.categories = true;
+    if (product.price <= 0) errors.price = true;
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  }, [product.name, product.brand, product.categories, product.price]);
+
+  const handleSaveClick = useCallback(async () => {
+    if (!validateForm()) return;
+
+    setIsSaving(true);
+    await new Promise(resolve => setTimeout(resolve, 800));
+    setIsSaving(false);
+    onSave();
+  }, [validateForm, onSave]);
+
+  const handlePriceChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    const filteredValue = inputValue.replace(/[^\d]/g, '');
+
+    setFormattedPrice(formatCurrency(parseInt(filteredValue || '0')));
+    const numericValue = parseCurrency(filteredValue);
+    const valueInReais = numericValue / 100;
+
+    onChange(
+      { ...e, target: { ...e.target, value: valueInReais.toString() } },
+      'price'
+    );
+  }, [onChange]);
+
+  const overlayAnimation = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit: { opacity: 0 },
   };
 
-  const handleSaveClick = async () => {
-    setIsSaving(true);
-    
-    // Simular um tempo de espera para o processo de salvamento
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    onSave();
-    setIsSaving(false);
-    setShowSuccessAlert(true);
-    
-    // Auto-esconder o alerta após 3 segundos
-    setTimeout(() => {
-      setShowSuccessAlert(false);
-    }, 3000);
+  const modalAnimation = {
+    initial: { scale: 0.9, opacity: 0 },
+    animate: { scale: 1, opacity: 1 },
+    exit: { scale: 0.9, opacity: 0 },
+    transition: { type: 'spring', bounce: 0.25 }
   };
+
+  const selectStyles = useMemo(() => ({
+    backgroundImage: "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")",
+    backgroundPosition: "right 0.5rem center",
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "1.5em 1.5em",
+    paddingRight: "2.5rem"
+  }), []);
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
           className="fixed inset-0 flex items-center justify-center z-50 bg-black/50"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          {...overlayAnimation}
           onClick={onCancel}
         >
           <motion.div
             className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 relative"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            transition={{ type: 'spring', bounce: 0.25 }}
+            {...modalAnimation}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Alerta de sucesso */}
-            <AnimatePresence>
-              {showSuccessAlert && (
-                <motion.div
-                  className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-green-100 border border-green-200 text-green-800 px-4 py-2 rounded-lg shadow-md flex items-center"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                >
-                  <FaCheck className="mr-2" />
-                  Produto {isNewProduct ? 'adicionado' : 'atualizado'} com sucesso!
-                </motion.div>
-              )}
-            </AnimatePresence>
-            
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                 {isNewProduct ? 'Adicionar Produto' : 'Editar Produto'}
@@ -108,13 +129,13 @@ const ProductEditor = ({ product, isOpen, onSave, onCancel, onChange, onImageCha
               <button
                 onClick={onCancel}
                 className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-200"
+                aria-label="Fechar"
               >
                 <FaTimes className="h-5 w-5 text-gray-500 dark:text-gray-400" />
               </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Lado esquerdo - Imagem */}
               <div className="flex flex-col items-center">
                 <div className="h-64 w-full border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg flex items-center justify-center overflow-hidden bg-gray-50 dark:bg-gray-900 mb-4 relative">
                   {previewUrl ? (
@@ -144,8 +165,7 @@ const ProductEditor = ({ product, isOpen, onSave, onCancel, onChange, onImageCha
                       <p className="text-sm mt-1">Faça upload de uma imagem para o produto</p>
                     </div>
                   )}
-                  
-                  {/* Overlay para upload */}
+
                   <div className="absolute inset-0 bg-black/0 hover:bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200">
                     <label className="cursor-pointer bg-white dark:bg-gray-700 text-gray-800 dark:text-white px-4 py-2 rounded-lg shadow-sm hover:shadow flex items-center space-x-2">
                       <FaUpload className="h-4 w-4" />
@@ -177,70 +197,97 @@ const ProductEditor = ({ product, isOpen, onSave, onCancel, onChange, onImageCha
                 </div>
               </div>
 
-              {/* Lado direito - Campos do produto */}
               <div>
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Nome
+                    Nome <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     value={product.name}
                     onChange={(e) => onChange(e, 'name')}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                    className={`w-full px-3 py-2 border ${validationErrors.name ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white`}
+                    required
                   />
+                  {validationErrors.name && (
+                    <p className="text-red-500 text-sm mt-1">O nome é obrigatório.</p>
+                  )}
                 </div>
+
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Marca
+                    Marca <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     value={product.brand}
                     onChange={(e) => onChange(e, 'brand')}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                    className={`w-full px-3 py-2 border ${validationErrors.brand ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white`}
+                    required
                   />
+                  {validationErrors.brand && (
+                    <p className="text-red-500 text-sm mt-1">A marca é obrigatória.</p>
+                  )}
                 </div>
+
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Categoria
+                    Categoria <span className="text-red-500">*</span>
                   </label>
                   <select
                     value={product.categories || ''}
                     onChange={(e) => onChange(e, 'categories')}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white cursor-pointer appearance-none"
-                    style={{ backgroundImage: "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")",
-                            backgroundPosition: "right 0.5rem center",
-                            backgroundRepeat: "no-repeat",
-                            backgroundSize: "1.5em 1.5em",
-                            paddingRight: "2.5rem" }}
+                    className={`w-full px-3 py-2 border ${validationErrors.categories ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white cursor-pointer appearance-none`}
+                    style={selectStyles}
+                    required
                   >
                     <option value="" disabled>Selecione uma categoria</option>
                     {CATEGORIAS.map((categoria) => (
                       <option key={categoria} value={categoria}>{categoria}</option>
                     ))}
                   </select>
+                  {validationErrors.categories && (
+                    <p className="text-red-500 text-sm mt-1">A categoria é obrigatória.</p>
+                  )}
                 </div>
+
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Preço (R$)
+                    Preço (R$) <span className="text-red-500">*</span>
                   </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={product.price}
-                    onChange={(e) => onChange(e, 'price')}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                  />
+                  <div className="relative">
+                   
+                    <input
+                      type="text"
+                      value={formattedPrice}
+                      onChange={handlePriceChange}
+                      onKeyDown={(e) => {
+                        const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+                        if (!/^\d$/.test(e.key) && !allowedKeys.includes(e.key)) {
+                          e.preventDefault();
+                        }
+                      }}
+                      onBlur={() => {
+                        const numericValue = parseCurrency(formattedPrice);
+                        setFormattedPrice(formatCurrency(numericValue));
+                      }}
+                      className={`w-full px-3 py-2  border ${validationErrors.price ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white`}
+                      required
+                    />
+                  </div>
+                  {validationErrors.price && (
+                    <p className="text-red-500 text-sm mt-1">O preço deve ser maior que zero.</p>
+                  )}
                 </div>
               </div>
             </div>
-            
+
             <div className="flex justify-end space-x-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
               <button
                 onClick={onCancel}
                 className="px-4 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-800 dark:text-white font-medium rounded-md transition-colors duration-200"
                 disabled={isSaving}
+                type="button"
               >
                 Cancelar
               </button>
@@ -248,6 +295,7 @@ const ProductEditor = ({ product, isOpen, onSave, onCancel, onChange, onImageCha
                 onClick={handleSaveClick}
                 disabled={isSaving}
                 className={`px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md transition-colors duration-200 flex items-center ${isSaving ? 'opacity-70 cursor-not-allowed' : ''}`}
+                type="button"
               >
                 {isSaving ? (
                   <>
@@ -269,4 +317,4 @@ const ProductEditor = ({ product, isOpen, onSave, onCancel, onChange, onImageCha
   );
 };
 
-export default memo(ProductEditor);
+export default memo(ProductModal);
