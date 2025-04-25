@@ -1,23 +1,48 @@
 # 🚀 Desafio Frontend Zaply
 
-Bem-vindo ao projeto de desafio frontend! Este projeto foi desenvolvido usando [Next.js](https://nextjs.org) e apresenta um catálogo de produtos com funcionalidades de filtro, pesquisa e visualização detalhada.
-
-![Logo Zaply](./public/images/logo_zaply.png)
+Bem-vindo ao projeto de desafio frontend! Este projeto foi desenvolvido usando [Next.js](https://nextjs.org) com TypeScript e apresenta um catálogo de produtos com funcionalidades avançadas de filtro, pesquisa e visualização detalhada.
 
 ## 📋 Sobre o Projeto
 
-Este projeto demonstra uma interface para gerenciamento e visualização de produtos. Para simplificar o desenvolvimento, utilizamos uma abordagem interessante:
+Este projeto demonstra uma interface moderna e responsiva para gerenciamento e visualização de produtos. Para simplificar o desenvolvimento e manter o foco nas habilidades de frontend, utilizei uma abordagem interessante:
 
-- Convertemos dados de produtos originalmente em CSV para formato JSON
-- Utilizamos [Mockbin](https://mockbin.io/) para simular uma API, evitando a necessidade de criar um backend
-- Os dados são obtidos através da URL: `https://7daf496f49c24182af48ee21542cd665.api.mockbin.io/`
+- Dados de produtos originalmente em CSV foram convertidos para formato JSON
+- Utilizei [Mockbin](https://mockbin.io/) para simular uma API RESTful, eliminando a necessidade de um backend dedicado
+- Os dados são consumidos através do endpoint: [https://7daf496f49c24182af48ee21542cd665.api.mockbin.io/](https://7daf496f49c24182af48ee21542cd665.api.mockbin.io/)
 
-> **Nota sobre imagens:** Em vários produtos, você pode notar que algumas imagens não carregam e retornam um erro 404 com a mensagem "Not Found". Este comportamento é esperado devido à natureza do ambiente de demonstração.
+> **Nota sobre imagens:** Alguns produtos podem apresentar problemas no carregamento de imagens, retornando erro 404 ("Not Found"). Isso é esperado e faz parte do ambiente simulado.
 
-## 🌐 Demo Online
+## ✨ Principais Funcionalidades
 
-Você pode ver o projeto em funcionamento através do link:
+- **Catálogo Completo**: Listagem de produtos com imagens e informações detalhadas
+- **Visualização Flexível**: Opção de visualização por grid ou lista
+- **Filtros Avançados**: Filtragem por categorias, marcas e faixa de preço
+- **Busca Inteligente**: Sistema de busca por texto
+- **Design Responsivo**: Interface adaptável para dispositivos móveis e desktop 
+- **Preferências do Usuário**: Seleção de tema claro/escuro
+- **Interface Intuitiva**: UX/UI baseada nas práticas observadas no site e vídeo do [Zaply](https://zaply.io/pt/)
+  
+## 🌐 Demonstração Online
+
+O projeto está disponível para acesso imediato através da [Vercel](https://vercel.com/), com deploy automatizado a partir do repositório GitHub.
+
+**Link da demonstração:**
 [https://desafio-frontend-zaply.vercel.app/](https://desafio-frontend-zaply.vercel.app/)
+
+## 🛠️ Tecnologias Utilizadas
+
+- **Next.js 15.3.1** - Framework React
+- **React 19** - Biblioteca JavaScript para construção de interfaces
+- **TypeScript** - Linguagem para desenvolvimento 
+- **Tailwind CSS 3.3** - Framework CSS para estilização rápida
+- **Framer Motion** - Biblioteca para animações
+- **React Icons** - Conjunto ícones
+- **MockBin** - Serviço para simulação de API RESTful
+
+## 🚨 Pré-requisitos
+
+- Node.js (versão 18.x ou superior)
+- npm ou yarn
 
 ## 🚀 Como Iniciar
 
@@ -25,7 +50,7 @@ Você pode ver o projeto em funcionamento através do link:
 
 ```bash
 # Clone este repositório para sua máquina local
-git clone https://github.com/SEU-USUARIO/Desafio_Frontend_Zaply.git
+git clone https://github.com/BCaceress/Desafio_Frontend_Zaply.git
 
 # Entre na pasta do projeto
 cd Desafio_Frontend_Zaply-main
@@ -34,43 +59,40 @@ cd Desafio_Frontend_Zaply-main
 ### Instalando Dependências
 
 ```bash
-# Instale todas as dependências necessárias
+# Usando npm
 npm install
+
+# Ou usando yarn
+yarn
 ```
 
 ### Executando o Projeto
 
 ```bash
-# Inicie o servidor de desenvolvimento
+# Inicie o servidor de desenvolvimento com Turbopack
 npm run dev
+
+# Ou com yarn
+yarn dev
 ```
 
 Agora abra [http://localhost:3000](http://localhost:3000) no seu navegador para ver o resultado!
 
-## 🧩 Principais Funcionalidades
+## 📁 Estrutura do Projeto
 
-- Listagem de produtos com imagens e informações detalhadas
-- Filtragem por categorias
-- Sistema de busca com debounce
-- Interface responsiva e amigável
-- Tema claro/escuro
+O projeto segue uma arquitetura organizada e modular:
 
-## 🛠️ Tecnologias Utilizadas
+- `src/app/` - Páginas e rotas da aplicação (Next.js App Router)
+  - `products/` - Página de produtos
+- `src/components/` - Componentes React reutilizáveis
+  - `layout/` - Componentes de estrutura da página (Navbar, etc)
+  - `products/` - Componentes específicos para produtos
+  - `ui/` - Elementos de interface genéricos
+- `src/hooks/` - Hooks React personalizados
+- `src/types/` - Definições de tipos TypeScript
+- `src/styles/` - Estilos globais e configurações do Tailwind
 
-- **Next.js** - Framework React
-- **TypeScript** - Linguagem
-- **Tailwind CSS** - Estilização
-- **MockBin** - API simulada
+---
 
-## 📝 Desenvolvimento
+Desenvolvido com ❤️ como parte do desafio técnico para Zaply.
 
-Sinta-se à vontade para modificar o projeto! A estrutura de arquivos é organizada da seguinte forma:
-
-- `src/components` - Componentes reutilizáveis
-- `src/app` - Páginas e rotas da aplicação
-- `src/types` - Definições de tipos TypeScript
-- `src/hooks` - Hooks personalizados
-
-## 📬 Feedback
-
-Se você tiver sugestões ou encontrar problemas, por favor abra uma issue ou envie um pull request!
