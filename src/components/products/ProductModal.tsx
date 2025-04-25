@@ -256,7 +256,9 @@ const ProductModal = ({ product, isOpen, onSave, onCancel, onChange, onImageChan
                     Preço (R$) <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
-                   
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                      <span className="text-gray-500 dark:text-gray-400">R$</span>
+                    </div>
                     <input
                       type="text"
                       value={formattedPrice}
@@ -271,7 +273,7 @@ const ProductModal = ({ product, isOpen, onSave, onCancel, onChange, onImageChan
                         const numericValue = parseCurrency(formattedPrice);
                         setFormattedPrice(formatCurrency(numericValue));
                       }}
-                      className={`w-full px-3 py-2  border ${validationErrors.price ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white`}
+                      className={`w-full px-3 py-2 pl-10 border ${validationErrors.price ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white`}
                       required
                     />
                   </div>

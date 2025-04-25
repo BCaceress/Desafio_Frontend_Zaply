@@ -1,6 +1,6 @@
 import { Product } from "@/types/product";
 import Image from "next/image";
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import { FaTag } from "react-icons/fa";
 import { MdImage } from "react-icons/md";
 import { TbEdit } from "react-icons/tb";
@@ -22,12 +22,6 @@ const ProductCard = ({
   onImageError,
   onImageLoad,
 }: ProductCardProps) => {
-  // State to track if we even attempt to load the image
-  const [shouldLoadImage, setShouldLoadImage] = useState(() => {
-    return Boolean(product.image && product.image.startsWith('http') && 
-      // Exclude known problematic domains
-      !product.image.includes('savegnago.vteximg.com.br'));
-  });
 
   const shouldUseEagerLoading = product.id < 4;
 
@@ -54,7 +48,7 @@ const ProductCard = ({
   return (
     <div className={containerClasses}>
       <div className={`${imageContainerClasses} relative bg-white flex items-center justify-center overflow-hidden`}>
-        {product.image && shouldLoadImage && imageStatus !== 'error' ? (
+        {product.image && imageStatus !== 'error' ? (
           <div className="relative h-full w-full bg-white">
             <Image
               src={product.image}
@@ -63,15 +57,11 @@ const ProductCard = ({
               sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
               className={`object-contain p-4 transition-opacity duration-300 ${imageStatus === 'loaded' ? 'opacity-100' : 'opacity-0'
                 }`}
-              onError={() => {
-                onImageError();
-                setShouldLoadImage(false);
-              }}
+              onError={onImageError}
               onLoad={onImageLoad}
               loading={shouldUseEagerLoading ? "eager" : "lazy"}
               priority={shouldUseEagerLoading}
               quality={80}
-              unoptimized={true} // Prevents Next.js from optimizing external images that might return 404
             />
             {imageStatus === 'loading' && (
               <div className="absolute inset-0 flex items-center justify-center bg-gray-50/80 dark:bg-white/90 backdrop-blur-sm">

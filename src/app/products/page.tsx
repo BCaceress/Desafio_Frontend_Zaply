@@ -6,12 +6,11 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { Product } from "@/types/product";
 import { AnimatePresence, motion } from "framer-motion";
 import dynamic from 'next/dynamic';
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { BiSad } from "react-icons/bi";
 import { FaCheck, FaFilter, FaListUl, FaSearch, FaThLarge } from "react-icons/fa";
 import { TbAlertCircle, TbPlus } from "react-icons/tb";
 
-// Lazy load components that aren't needed immediately
 const ProductCard = dynamic(() => import('@/components/products/ProductCard'), {
   loading: () => <div className="h-72 animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg" />,
   ssr: false
@@ -21,18 +20,6 @@ const ProductEditor = dynamic(() => import('@/components/products/ProductModal')
   ssr: false
 });
 
-// Função para validar URLs de imagens para evitar erros 404
-const isValidImageUrl = (url: string): boolean => {
-  if (!url) return false;
-  if (!url.startsWith('http')) return false;
-  
-  const problematicPatterns = [
-    'savegnago.vteximg.com.br',
-  ];
-  
-  return !problematicPatterns.some(pattern => url.includes(pattern));
-};
-
 export default function Products() {
   // Produtos 
   const [products, setProducts] = useState<Product[]>([]);
@@ -41,7 +28,6 @@ export default function Products() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
-  const apiCallCompletedRef = useRef(false);
 
   // Modal 
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -68,9 +54,6 @@ export default function Products() {
   // Chamada da API
   useEffect(() => {
     async function fetchProducts() {
-      if (apiCallCompletedRef.current) return;
-
-      apiCallCompletedRef.current = true;
       setIsLoading(true);
       try {
         const response = await fetch("https://7daf496f49c24182af48ee21542cd665.api.mockbin.io/");
@@ -81,11 +64,7 @@ export default function Products() {
 
         const validProducts = data.filter((p: Product) =>
           p.id && p.name && p.brand && (typeof p.price === 'number')
-        ).map((product: Product) => ({
-          ...product,
-          // Pre-validate image URLs to prevent 404 network errors
-          image: isValidImageUrl(product.image) ? product.image : ''
-        }));
+        );
 
         const brandsSet = new Set<string>();
         const categoriesSet = new Set<string>();
