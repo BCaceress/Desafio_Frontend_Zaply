@@ -34,7 +34,7 @@ export default function Home() {
                   </Link>
                   
                   <a
-                    href="https://github.com"
+                    href="https://github.com/BCaceress/Desafio_Frontend_Zaply.git"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 px-8 py-4 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/70 transition-all shadow-sm"
