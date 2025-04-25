@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Desafio Frontend Zaply
 
-## Getting Started
+Bem-vindo ao projeto de desafio frontend! Este projeto foi desenvolvido usando [Next.js](https://nextjs.org) e apresenta um catálogo de produtos com funcionalidades de filtro, pesquisa e visualização detalhada.
 
-First, run the development server:
+![Logo Zaply](./public/images/logo_zaply.png)
+
+## 📋 Sobre o Projeto
+
+Este projeto demonstra uma interface para gerenciamento e visualização de produtos. Para simplificar o desenvolvimento, utilizamos uma abordagem interessante:
+
+- Convertemos dados de produtos originalmente em CSV para formato JSON
+- Utilizamos [Mockbin](https://mockbin.io/) para simular uma API, evitando a necessidade de criar um backend
+- Os dados são obtidos através da URL: `https://7daf496f49c24182af48ee21542cd665.api.mockbin.io/`
+
+> **Nota sobre imagens:** Em vários produtos, você pode notar que algumas imagens não carregam e retornam um erro 404 com a mensagem "Not Found". Este comportamento é esperado devido à natureza do ambiente de demonstração.
+
+## 🌐 Demo Online
+
+Você pode ver o projeto em funcionamento através do link:
+[https://desafio-frontend-zaply.vercel.app/](https://desafio-frontend-zaply.vercel.app/)
+
+## 🚀 Como Iniciar
+
+### Clonando o Repositório
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Clone este repositório para sua máquina local
+git clone https://github.com/SEU-USUARIO/Desafio_Frontend_Zaply.git
+
+# Entre na pasta do projeto
+cd Desafio_Frontend_Zaply-main
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Instalando Dependências
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Instale todas as dependências necessárias
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Executando o Projeto
 
-## Learn More
+```bash
+# Inicie o servidor de desenvolvimento
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Agora abra [http://localhost:3000](http://localhost:3000) no seu navegador para ver o resultado!
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🧩 Principais Funcionalidades
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Listagem de produtos com imagens e informações detalhadas
+- Filtragem por categorias
+- Sistema de busca com debounce
+- Interface responsiva e amigável
+- Tema claro/escuro
 
-## Deploy on Vercel
+## 🛠️ Tecnologias Utilizadas
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Next.js** - Framework React
+- **TypeScript** - Linguagem
+- **Tailwind CSS** - Estilização
+- **MockBin** - API simulada
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📝 Desenvolvimento
+
+Sinta-se à vontade para modificar o projeto! A estrutura de arquivos é organizada da seguinte forma:
+
+- `src/components` - Componentes reutilizáveis
+- `src/app` - Páginas e rotas da aplicação
+- `src/types` - Definições de tipos TypeScript
+- `src/hooks` - Hooks personalizados
+
+## 📬 Feedback
+
+Se você tiver sugestões ou encontrar problemas, por favor abra uma issue ou envie um pull request!
