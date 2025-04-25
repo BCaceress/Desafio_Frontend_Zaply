@@ -21,6 +21,17 @@ const ProductEditor = dynamic(() => import('@/components/products/ProductModal')
   ssr: false
 });
 
+// Função para validar URLs de imagens para evitar erros 404
+const isValidImageUrl = (url: string): boolean => {
+  if (!url) return false;
+  if (!url.startsWith('http')) return false;
+  
+  const problematicPatterns = [
+    'savegnago.vteximg.com.br',
+  ];
+  
+  return !problematicPatterns.some(pattern => url.includes(pattern));
+};
 
 export default function Products() {
   // Produtos 
@@ -70,7 +81,11 @@ export default function Products() {
 
         const validProducts = data.filter((p: Product) =>
           p.id && p.name && p.brand && (typeof p.price === 'number')
-        );
+        ).map((product: Product) => ({
+          ...product,
+          // Pre-validate image URLs to prevent 404 network errors
+          image: isValidImageUrl(product.image) ? product.image : ''
+        }));
 
         const brandsSet = new Set<string>();
         const categoriesSet = new Set<string>();

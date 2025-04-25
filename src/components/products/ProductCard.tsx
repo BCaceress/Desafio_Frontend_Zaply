@@ -22,9 +22,11 @@ const ProductCard = ({
   onImageError,
   onImageLoad,
 }: ProductCardProps) => {
-
+  // State to track if we even attempt to load the image
   const [shouldLoadImage, setShouldLoadImage] = useState(() => {
-    return Boolean(product.image && product.image.startsWith('http'));
+    return Boolean(product.image && product.image.startsWith('http') && 
+      // Exclude known problematic domains
+      !product.image.includes('savegnago.vteximg.com.br'));
   });
 
   const shouldUseEagerLoading = product.id < 4;
@@ -69,7 +71,7 @@ const ProductCard = ({
               loading={shouldUseEagerLoading ? "eager" : "lazy"}
               priority={shouldUseEagerLoading}
               quality={80}
-              unoptimized={true} 
+              unoptimized={true} // Prevents Next.js from optimizing external images that might return 404
             />
             {imageStatus === 'loading' && (
               <div className="absolute inset-0 flex items-center justify-center bg-gray-50/80 dark:bg-white/90 backdrop-blur-sm">
