@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { MdImage } from "react-icons/md";
 import { Product } from "@/types/product";
 
@@ -11,7 +11,7 @@ interface ProductCardProps {
   onEdit: (product: Product) => void;
   onImageError: (productId: number) => void;
   onImageLoad: (productId: number) => void;
-  itemVariants: any;
+  itemVariants: Variants;
 }
 
 const ProductCard = ({

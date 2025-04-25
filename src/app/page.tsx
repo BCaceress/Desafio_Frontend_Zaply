@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { SiNextdotjs, SiTypescript, SiTailwindcss, SiVercel, SiGithub } from "react-icons/si";
 import { FaLinkedin } from "react-icons/fa";

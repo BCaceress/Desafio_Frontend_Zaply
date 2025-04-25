@@ -2,6 +2,7 @@ import { memo, ChangeEvent, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaTimes, FaImage, FaUpload, FaCheck } from 'react-icons/fa';
 import { Product } from '@/types/product';
+import Image from 'next/image';
 
 // Lista de categorias disponíveis
 const CATEGORIAS = [
@@ -28,7 +29,6 @@ interface ProductEditorProps {
 }
 
 const ProductEditor = ({ product, isOpen, onSave, onCancel, onChange, onImageChange }: ProductEditorProps) => {
-  const [imageUrl, setImageUrl] = useState(product.image || '');
   const [isValidImage, setIsValidImage] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
@@ -37,13 +37,6 @@ const ProductEditor = ({ product, isOpen, onSave, onCancel, onChange, onImageCha
   
   // Verifica se está no modo de adição ou edição
   const isNewProduct = product.id < 0;
-
-  const handleImageUrlChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const url = e.target.value;
-    setImageUrl(url);
-    setPreviewUrl(url);
-    onImageChange(url);
-  };
 
   const handleImageFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -57,18 +50,6 @@ const ProductEditor = ({ product, isOpen, onSave, onCancel, onChange, onImageCha
     // Simular uma URL para enviar ao onImageChange
     // Em uma implementação real, enviaria o arquivo a um servidor e usaria a URL retornada
     onImageChange(objectURL);
-  };
-
-  const checkImage = (url: string) => {
-    if (!url) {
-      setIsValidImage(true);
-      return;
-    }
-
-    const img = new Image();
-    img.onload = () => setIsValidImage(true);
-    img.onerror = () => setIsValidImage(false);
-    img.src = url;
   };
 
   const handleSaveClick = async () => {
@@ -138,10 +119,12 @@ const ProductEditor = ({ product, isOpen, onSave, onCancel, onChange, onImageCha
                 <div className="h-64 w-full border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg flex items-center justify-center overflow-hidden bg-gray-50 dark:bg-gray-900 mb-4 relative">
                   {previewUrl ? (
                     <div className="relative w-full h-full">
-                      <img
+                      <Image
                         src={previewUrl}
                         alt="Preview do produto"
-                        className="w-full h-full object-contain p-4"
+                        fill
+                        sizes="(max-width: 768px) 100vw, 300px"
+                        className="object-contain p-4"
                         onError={() => setIsValidImage(false)}
                         onLoad={() => setIsValidImage(true)}
                       />

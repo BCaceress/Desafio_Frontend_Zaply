@@ -1,15 +1,14 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback, memo, Suspense, useRef } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Product } from "@/types/product";
 import Loading from "@/components/ui/Loading";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import dynamic from 'next/dynamic';
 import ProductFilters from "@/components/products/ProductFilters";
 import { useDebounce } from "@/hooks/useDebounce";
-import { SiGithub } from "react-icons/si";
-import { FaLinkedin, FaTwitter, FaSearch, FaListUl, FaThLarge, FaFilter, FaSadTear, FaTimes } from "react-icons/fa";
-import { TbLayoutGrid, TbLayoutList, TbFilter, TbShoppingBag, TbAlertCircle, TbPlus } from "react-icons/tb";
+import { FaSearch, FaListUl, FaThLarge, FaFilter } from "react-icons/fa";
+import { TbAlertCircle, TbPlus } from "react-icons/tb";
 import { BiSad } from "react-icons/bi";
 
 // Lazy load components that aren't needed immediately
@@ -320,20 +319,20 @@ export default function Products() {
            (priceRange[0] > 0 || priceRange[1] < maxPrice ? 1 : 0);
   }, [selectedBrands.length, selectedCategories.length, priceRange, maxPrice]);
 
-  // Placeholder para item em carregamento
-  const ProductCardSkeleton = () => (
-    <div className="h-72 animate-pulse bg-gray-100 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm overflow-hidden">
-      <div className="h-48 bg-gray-200 dark:bg-gray-600"></div>
-      <div className="p-4 space-y-3">
-        <div className="h-5 bg-gray-200 dark:bg-gray-600 rounded w-3/4"></div>
-        <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-1/2"></div>
-        <div className="flex justify-between items-center pt-3">
-          <div className="h-7 bg-gray-200 dark:bg-gray-600 rounded w-1/4"></div>
-          <div className="h-8 bg-gray-200 dark:bg-gray-600 rounded w-1/4"></div>
-        </div>
-      </div>
-    </div>
-  );
+  // Placeholder para item em carregamento (não é usado atualmente)
+  // const ProductCardSkeleton = () => (
+  //   <div className="h-72 animate-pulse bg-gray-100 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm overflow-hidden">
+  //     <div className="h-48 bg-gray-200 dark:bg-gray-600"></div>
+  //     <div className="p-4 space-y-3">
+  //       <div className="h-5 bg-gray-200 dark:bg-gray-600 rounded w-3/4"></div>
+  //       <div className="h-4 bg-gray-200 dark:bg-gray-600 rounded w-1/2"></div>
+  //       <div className="flex justify-between items-center pt-3">
+  //         <div className="h-7 bg-gray-200 dark:bg-gray-600 rounded w-1/4"></div>
+  //         <div className="h-8 bg-gray-200 dark:bg-gray-600 rounded w-1/4"></div>
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -452,7 +451,7 @@ export default function Products() {
                   <span className="font-medium text-gray-900 dark:text-gray-100">{filteredProducts.length}</span> produto{filteredProducts.length !== 1 ? 's' : ''} encontrado{filteredProducts.length !== 1 ? 's' : ''}
                   {activeFiltersCount > 0 ? ' para os filtros aplicados' : ''}
                   {searchTerm.trim() !== '' ? 
-                    <span> para "<span className="font-medium text-orange-600 dark:text-orange-400">{searchTerm}</span>"</span> 
+                    <span> para &quot;<span className="font-medium text-orange-600 dark:text-orange-400">{searchTerm}</span>&quot;</span> 
                     : ''}
                 </div>
                 {sortBy !== 'none' && (
